@@ -1,4 +1,5 @@
 /*
+链表带头节点
 请设计一个空间复杂度为O(1)且时间上尽可能高效的算法，重新排列L中的各结点，得到线性表L'=(a1，an，a2，an-1，a3，an-2…)。要求：
 (1) 给出算法的基本设计思想
 (2) 根据设计思想，采用C或C++语言描述算法，关键之处给出注释。
@@ -20,6 +21,15 @@ void printlnNODE(NODE node);
 
 // 重新排列各节点
 void arrNODE(NODE *node);
+
+//将node分半并返回后一半
+NODE *split(NODE *node);
+
+//倒置链表
+void inverse(NODE *node);
+
+//两链表合并到第一个链表
+void merge_list(NODE *node,NODE *half);
 
 int main()
 {
@@ -58,5 +68,55 @@ void printlnNODE(NODE node)
 
 void arrNODE(NODE *node)
 {
+    NODE *half = split(node);
+    inverse(half);
+    merge_list(node,half);
+}
 
+NODE *split(NODE *node)
+{   // 两个指针指到头节点
+    NODE *p1,*p2;
+    p1 = p2 = node;
+    // p1走1步，p2试探着走2步
+    while(p2->next != NULL)
+    {
+        p1 = p1->next;
+        p2 = p2->next;
+        if(p2->next !=NULL) p2 = p2->next;
+    }
+    // 找到中点后拆分为2个
+    p2 = (NODE*)malloc(sizeof(struct node));
+    p2->next = p1->next;
+    p1->next = NULL;
+    return p2;
+}
+
+void inverse(NODE *node)
+{
+    NODE *temp,*oldNode;
+    // 拆分为原节点和旧节点两部分
+    oldNode = node->next;
+    node->next = NULL;
+    // 旧节点一个个前插到原节点
+    while(oldNode != NULL)
+    {
+        temp = oldNode->next;
+        oldNode->next = node->next;
+        node->next = oldNode;
+        oldNode = temp;
+    }
+}
+
+void merge_list(NODE *node,NODE *half)
+{
+    NODE *p = node->next,*pNext = half;
+    half = half->next;
+    free(pNext);// 合成一个，释放头节点
+    while(half != NULL)
+    {
+        pNext = p->next;
+        p->next = half;
+        p = half;
+        half = pNext;
+    }
 }
