@@ -120,3 +120,29 @@ void merge_list(NODE *node,NODE *half)
         half = pNext;
     }
 }
+
+// 这是考试下最少时间拿最多分的方法
+void arrNODE2(NODE *node)
+{
+    NODE *last,*prev,*h=node;
+    while(h->next->next != NULL && h->next!=NULL)
+    {
+        for(last=prev=h; last->next; prev=last,last=last->next);
+        prev->next = NULL;
+        last->next = h->next->next;
+        h->next->next = last;
+        h = last;
+    }
+}
+
+// 这是考试下最少时间拿最多分方法的递归版
+void arrNODE3(NODE *h)
+{
+    NODE *last,*prev;
+    if(h->next == NULL || h->next->next == NULL) return;
+    for(last=prev=h; last->next; prev=last,last=last->next);
+    prev->next = NULL;
+    last->next = h->next->next;
+    h->next->next = last;
+    arrNODE(last);
+}
